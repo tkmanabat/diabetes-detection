@@ -14,10 +14,14 @@ Predict if someone has diabetes or not using Machine Learning
 #Load Data
 df=pd.read_csv("diabetes.csv")
 #Subheader
-st.subheader('Data Information:')
+st.write('## Dataset Information:')
+st.write('This dataset was derived from Kaggle. It is originally from the **National Institute of Diabetes and Digestive and Kidney Diseases**. This will be used to diagnostically predict whether or not a patient has diabetes, based on certain diagnostic measurements included in the dataset.')
 #Show data as table
-st.dataframe(df)
+st.write('## Exploratory Data Analysis:')
+st.write('### Dataset Head')
+st.dataframe(df[0:5])
 #Show stats
+st.write('### Descriptive Statistics')
 st.write(df.describe())
 #Chart
 chart=st.bar_chart(df)
@@ -70,7 +74,9 @@ st.write(str(accuracy_score(Y_test,RFC.predict(X_test))*100)+'%')
 
 #Store model predictions
 prediction=RFC.predict(userInput)
+predictionProbability=RFC.predict_proba(userInput)
 
 #Subheader classification display
 st.subheader('Classification: ')
 st.write(prediction)
+st.write(predictionProbability)
