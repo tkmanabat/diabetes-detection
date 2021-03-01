@@ -1,12 +1,20 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+import pickle
+
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from PIL import Image
 import streamlit as st
 
+
+KNN=pickle.load(open("./models/KNN.sav","rb"))
+LR=pickle.load(open("./models/LR.sav","rb"))
+RF=pickle.load(open("./models/RF.sav","rb"))
 
 
 #Create Title
@@ -48,7 +56,6 @@ plt.show()
 st.pyplot()
 
 st.write('### Outcomes of the Dataset')
-
 st.write("**Legend** ")
 st.write("0 - No Diabetes ")
 st.write("1 - With Diabetes")
@@ -64,7 +71,6 @@ option = st.sidebar.selectbox('Select your Machine Learning Model', ('K Nearest 
 
 
 
-
 #Get User input
 def getUserInfo():
     pregnancies=st.sidebar.slider('Pregnancies had',0,17,3)
@@ -75,7 +81,7 @@ def getUserInfo():
     bmi=st.sidebar.slider('Body Mass Index (BMI)',0.0,67.1,32.0)
     diabetesPedigreeFunction=st.sidebar.slider('Diabetes Pedigree Function',0.078,2.42,0.3725)
     age=st.sidebar.slider('Age',21,81,29)
-
+    outcome=0
     #Store into dictionary
     userData={'pregnancies':pregnancies,
     'glucose':glucose,
@@ -84,31 +90,44 @@ def getUserInfo():
     'insulin':insulin,
     'bmi':bmi,
     'diabetesPedigreeFunction':diabetesPedigreeFunction,
-    'age':age}
+    'age':age,
+    'outcome':outcome}
 
     #Transform to DF
     features=pd.DataFrame(userData,index=[0])
-    return features
+    sc_X = StandardScaler()
+    scaledFeatures =  pd.DataFrame(sc_X.fit_transform(features.drop(["outcome"],axis = 1),), columns=['pregnancies', 'glucose', 'bloodPressure', 'skinThickness', 'insulin','bmi', 'diabetespedigreeFunction', 'age'])
+    return scaledFeatures
 
 #Store user input to variable
 userInput=getUserInfo()
 
-#Set subheader and display user input
-st.subheader('You have placed:')
-st.write(userInput)
 
-
-
+if option=='K Nearest Neighbors':
+    accuracy='77%'
+    prediction=KNN.predict(userInput)
+    predictionProbability=KNN.predict_proba(userInput)
+elif option=='Logistic Regression':
+    accuracy='73%'
+    prediction=LR.predict(userInput)
+    predictionProbability=LR.predict_proba(userInput)
+elif option=='Random Forest':
+    accuracy='74%'
+    prediction=RF.predict(userInput)
+    predictionProbability=RF.predict_proba(userInput)
 
 #Show model metrics
-st.subheader("Model Test Accuracy Score:")
-st.write(str(accuracy_score(Y_test,RFC.predict(X_test))*100)+'%')
 
-#Store model predictions
-prediction=RFC.predict(userInput)
-predictionProbability=RFC.predict_proba(userInput)
 
+
+#Set subheader and display user input
+st.header('User Input and Prediction:')
+st.write(userInput)
+
+st.subheader(f'Model Selected: {option}')
+st.write(f"Model Accuracy: {accuracy}")
 #Subheader classification display
-st.subheader('Classification: ')
+st.subheader('Prediction: ')
 st.write(prediction)
+st.subheader('Prediction Probability: ')
 st.write(predictionProbability)
