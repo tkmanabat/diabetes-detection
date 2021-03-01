@@ -16,7 +16,7 @@ KNN=pickle.load(open("./models/KNN.sav","rb"))
 LR=pickle.load(open("./models/LR.sav","rb"))
 RF=pickle.load(open("./models/RF.sav","rb"))
 
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 #Create Title
 st.write("""
 # Diabetes Detection 
@@ -52,7 +52,7 @@ chart=st.bar_chart(df)
 
 st.write('### Distributions of each feature')
 histogram=df.hist(figsize=(20,20))
-plt.show()
+plt.show
 st.pyplot()
 
 st.write('### Outcomes of the Dataset')
@@ -81,7 +81,7 @@ def getUserInfo():
     bmi=st.sidebar.slider('Body Mass Index (BMI)',0.0,67.1,32.0)
     diabetesPedigreeFunction=st.sidebar.slider('Diabetes Pedigree Function',0.078,2.42,0.3725)
     age=st.sidebar.slider('Age',21,81,29)
-    outcome=0
+    
     #Store into dictionary
     userData={'pregnancies':pregnancies,
     'glucose':glucose,
@@ -90,21 +90,18 @@ def getUserInfo():
     'insulin':insulin,
     'bmi':bmi,
     'diabetesPedigreeFunction':diabetesPedigreeFunction,
-    'age':age,
-    'outcome':outcome}
+    'age':age}
 
     #Transform to DF
     features=pd.DataFrame(userData,index=[0])
-    sc_X = StandardScaler()
-    scaledFeatures =  pd.DataFrame(sc_X.fit_transform(features.drop(["outcome"],axis = 1),), columns=['pregnancies', 'glucose', 'bloodPressure', 'skinThickness', 'insulin','bmi', 'diabetespedigreeFunction', 'age'])
-    return scaledFeatures
+    return features
 
 #Store user input to variable
 userInput=getUserInfo()
 
 
 if option=='K Nearest Neighbors':
-    accuracy='77%'
+    accuracy='71%'
     prediction=KNN.predict(userInput)
     predictionProbability=KNN.predict_proba(userInput)
 elif option=='Logistic Regression':
@@ -116,7 +113,7 @@ elif option=='Random Forest':
     prediction=RF.predict(userInput)
     predictionProbability=RF.predict_proba(userInput)
 
-#Show model metrics
+
 
 
 
