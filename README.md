@@ -27,9 +27,9 @@ Several constraints were placed on the selection of these instances from a large
 </ul>
 
 ## Snapshots of the web application 📷
-<img src="snapshots\1.png" >
-<img src="snapshots\2.png" >
-<img src="snapshots\3.png" >
+![](/snapshots/1.PNG)
+![](/snapshots/2.PNG)
+![](/snapshots/3.PNG)
 
 
 
