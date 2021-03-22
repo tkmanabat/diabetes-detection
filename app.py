@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
 
 import pickle
 
@@ -22,6 +21,10 @@ st.write("""
 # Diabetes Detection 
 Predict if someone has diabetes or not using Machine Learning
 """)
+
+#image
+image=Image.open('image.jpg')
+st.image(image, use_column_width=True)
 
 #Load Data
 df=pd.read_csv("diabetes.csv")
