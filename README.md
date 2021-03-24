@@ -38,7 +38,7 @@ Several constraints were placed on the selection of these instances from a large
 
 * To run, install requirements.txt then run this command:
 ```python
-steamlit run app.py
+streamlit run app.py
 ```
 
 The notebook is also included in this repo, feel free to fork and improve this project 😃 
