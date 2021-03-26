@@ -58,8 +58,9 @@ chart=st.bar_chart(df)
 #Histograms 
 st.write('### Distributions of each feature')
 for column in df:
-    p=px.histogram(df,x=df[column])
-    st.plotly_chart(p)
+    if column != "Outcome":
+        p=px.histogram(df,x=df[column])
+        st.plotly_chart(p)
 
 
 #Bar plot outcomes
