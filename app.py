@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 
 import pickle
 
@@ -27,16 +27,19 @@ image=Image.open('image.jpg')
 st.image(image, use_column_width=True)
 
 #Load Data
-df=pd.read_csv("diabetes.csv")
-#clean missing values with reference to their distribution
-df[['Glucose','BloodPressure','SkinThickness','Insulin','BMI']]=df[['Glucose','BloodPressure','SkinThickness','Insulin','BMI']].replace(0,np.NaN)
-df['Glucose'].fillna(df['Glucose'].mean(), inplace = True)
-df['BloodPressure'].fillna(df['BloodPressure'].mean(), inplace = True)
-df['SkinThickness'].fillna(df['SkinThickness'].median(), inplace = True)
-df['Insulin'].fillna(df['Insulin'].median(), inplace = True)
-df['BMI'].fillna(df['BMI'].median(), inplace = True)
+@st.cache
+def loadData():
+    df=pd.read_csv("diabetes.csv")
+    #clean missing values with reference to their distribution
+    df[['Glucose','BloodPressure','SkinThickness','Insulin','BMI']]=df[['Glucose','BloodPressure','SkinThickness','Insulin','BMI']].replace(0,np.NaN)
+    df['Glucose'].fillna(df['Glucose'].mean(), inplace = True)
+    df['BloodPressure'].fillna(df['BloodPressure'].mean(), inplace = True)
+    df['SkinThickness'].fillna(df['SkinThickness'].median(), inplace = True)
+    df['Insulin'].fillna(df['Insulin'].median(), inplace = True)
+    df['BMI'].fillna(df['BMI'].median(), inplace = True)
+    return df
 
-
+df=loadData()
 
 #Subheader
 st.write('## Dataset Information:')
@@ -52,19 +55,20 @@ st.write(df.describe())
 chart=st.bar_chart(df)
 
 
-
+#Histograms 
 st.write('### Distributions of each feature')
-histogram=df.hist(figsize=(20,20))
-plt.show
-st.pyplot()
+for column in df:
+    p=px.histogram(df,x=df[column])
+    st.plotly_chart(p)
 
+
+#Bar plot outcomes
 st.write('### Outcomes of the Dataset')
 st.write("**Legend** ")
 st.write("0 - No Diabetes ")
 st.write("1 - With Diabetes")
-p=df.Outcome.value_counts().plot(kind="bar")
-plt.show()
-st.pyplot()
+st.bar_chart(df.Outcome.value_counts())
+#p=df.Outcome.value_counts().plot(kind="bar")
 st.write('The graph above shows that the data is biased towards datapoints having outcome value as 0 where it means that diabetes was not present actually. The number of non-diabetics is almost twice the number of diabetic patient.')
 
 
