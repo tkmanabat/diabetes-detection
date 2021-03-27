@@ -16,7 +16,11 @@ KNN=pickle.load(open("./models/KNN.sav","rb"))
 LR=pickle.load(open("./models/LR.sav","rb"))
 RF=pickle.load(open("./models/RF.sav","rb"))
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
+#set tab name and favicon
+st.set_page_config(page_title="Diabetes Detection", page_icon="💉", layout='centered', initial_sidebar_state='auto')
+
+
+
 #Create Title
 st.write("""
 # Diabetes Detection 
