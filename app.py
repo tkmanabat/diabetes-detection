@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import json
 
 import pickle
 
@@ -73,9 +74,17 @@ st.bar_chart(df.Outcome.value_counts())
 st.write('The graph above shows that the data is biased towards datapoints having outcome value as 0 where it means that diabetes was not present actually. The number of non-diabetics is almost twice the number of diabetic patient.')
 
 
+#Set subheader and display user input
+st.header('User Input and Prediction:')
+st.markdown('### Input:')
+
+#sidebar 
 st.sidebar.header('User Input')
 st.sidebar.write('Predict whether you have diabetes or not by entering the parameters. The results are located at the bottom of the page')
 option = st.sidebar.selectbox('Select your Machine Learning Model', ('K Nearest Neighbors', 'Logistic Regression', 'Random Forest'))
+
+
+
 
 
 
@@ -102,37 +111,59 @@ def getUserInfo():
 
     #Transform to DF
     features=pd.DataFrame(userData,index=[0])
-    return features
+    jsonObject=json.dumps(userData,indent =4)
+    st.json(jsonObject)
+
+    return features 
 
 #Store user input to variable
 userInput=getUserInfo()
 
-
+#selection of ml models 
 if option=='K Nearest Neighbors':
     accuracy='71%'
     prediction=KNN.predict(userInput)
-    predictionProbability=KNN.predict_proba(userInput)
+    predictionProbability=KNN.predict_proba(userInput)[:,1]
 elif option=='Logistic Regression':
     accuracy='73%'
     prediction=LR.predict(userInput)
-    predictionProbability=LR.predict_proba(userInput)
+    predictionProbability=LR.predict_proba(userInput)[:,1]
 elif option=='Random Forest':
     accuracy='74%'
-    prediction=RF.predict(userInput)
+    prediction=RF.predict(userInput)[:,1]
     predictionProbability=RF.predict_proba(userInput)
 
 
 
 
 
-#Set subheader and display user input
-st.header('User Input and Prediction:')
-st.write(userInput)
 
 st.subheader(f'Model Selected: {option}')
 st.write(f"Model Accuracy: {accuracy}")
+
 #Subheader classification display
 st.subheader('Prediction: ')
-st.write(prediction)
+if prediction==1:
+    st.warning("You have a probability of having diabetes. Please consult with your doctor")
+elif prediction==0:
+    st.success("Congratulations! You have a low chance of having diabetes")
+
+
+
+
+#show the prediction probability 
 st.subheader('Prediction Probability: ')
-st.write(predictionProbability)
+
+
+st.markdown(
+    """
+    <style>
+        .stProgress > div > div > div > div {
+            background-color: #f63367;
+        }
+    </style>""",
+    unsafe_allow_html=True,
+)
+
+st.progress(predictionProbability[0])
+st.markdown(f"<center> You have an <b>{round(predictionProbability[0]*100)}%</b> chance of having diabetes </center>", unsafe_allow_html=True)
