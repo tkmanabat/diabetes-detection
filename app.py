@@ -135,7 +135,7 @@ elif option=='Logistic Regression':
 elif option=='Random Forest':
     accuracy='74%'
     prediction=RF.predict(userInput)[:,1]
-    predictionProbability=RF.predict_proba(userInput)
+    predictionProbability=RF.predict_proba(userInput)[:,1]
 
 
 
